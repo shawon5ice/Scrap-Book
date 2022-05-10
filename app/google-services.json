@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "455606605174",
+    "project_id": "scrap-book-163ee",
+    "storage_bucket": "scrap-book-163ee.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:455606605174:android:b90ad7671f510035549657",
+        "android_client_info": {
+          "package_name": "com.ssquare.scrapbook"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "455606605174-3leo2t9v6g1mmhr2lqjotvneqevmp0eh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ssquare.scrapbook",
+            "certificate_hash": "6cb91f67067c07c5ce45a071f8a3b19b84dc494b"
+          }
+        },
+        {
+          "client_id": "455606605174-s7ftfpfb6fpal0hg24bnvk83p54cnvvj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAf15gncX-KxD9JF7KHUWggVwTPBzBiueo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "455606605174-s7ftfpfb6fpal0hg24bnvk83p54cnvvj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

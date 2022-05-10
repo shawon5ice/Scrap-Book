@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".authentication.Login"
+    android:orientation="vertical"
+    android:layout_marginHorizontal="20dp"
+    android:layout_marginBottom="20dp"
+    android:id="@+id/loginScreenId"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+<!--        <ImageView-->
+<!--            android:id="@+id/logo_image"-->
+<!--            android:layout_width="150dp"-->
+<!--            android:layout_height="150dp"-->
+<!--            android:transitionName="logo_image"-->
+<!--            android:src="@drawable/bull_rent"/>-->
+
+        <TextView
+            android:id="@+id/logo_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="100dp"
+            android:layout_marginBottom="20dp"
+            android:fontFamily="@font/sail"
+            android:text="ScrapBook"
+            android:textColor="@android:color/black"
+            android:textSize="52sp">
+
+        </TextView>
+
+
+        <ProgressBar
+            android:visibility="invisible"
+            android:layout_gravity="end|center"
+            android:id="@+id/LoginProgressBarId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </ProgressBar>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/logo_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello there,\nWelcome back"
+        android:fontFamily="@font/bungee"
+        android:textColor="#000"
+        android:textSize="40sp"
+        android:includeFontPadding="false"
+        android:lineSpacingExtra="0dp"
+        />
+
+    <TextView
+        android:id="@+id/logo_slogan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/antic"
+        android:transitionName="logo_slogan"
+        android:text="Sign in to continue" />
+    <LinearLayout
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <com.google.android.material.textfield.TextInputLayout
+            android:hint="Email"
+            android:id="@+id/signInEmail"
+            app:errorIconTint="@android:color/transparent"
+            android:transitionName="email_tran"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_marginBottom="5dp"
+            android:layout_height="wrap_content">
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:maxLines="1"
+                android:layout_height="wrap_content"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:hint="Password"
+            android:id="@+id/password"
+            app:errorIconTint="@android:color/transparent"
+            android:transitionName="password_tran"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            app:passwordToggleEnabled="true"
+            android:layout_height="wrap_content">
+            <com.google.android.material.textfield.TextInputEditText
+
+                android:layout_width="match_parent"
+                android:maxLines="1"
+                android:inputType="textPassword"
+                android:layout_height="wrap_content"/>
+        </com.google.android.material.textfield.TextInputLayout>
+        <Button
+            android:id="@+id/forget_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:text="Forget Password?"
+            android:layout_gravity="right"
+            android:layout_margin="5dp"
+            android:elevation="0dp"
+            android:fontFamily="@font/antic"
+            >
+        </Button>
+
+        <Button
+            android:id="@+id/login_btn"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:backgroundTint="@android:color/black"
+            android:onClick="loginUser"
+            android:text="GO"
+            android:transitionName="button_tran">
+
+        </Button>
+        <Button
+            android:id="@+id/gotoSinUpButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:text="New User? Sign Up"
+            android:transitionName="login_signup_tran"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:elevation="0dp"
+            android:fontFamily="@font/antic"
+            >
+        </Button>
+        <!--        <Button-->
+        <!--            android:id="@+id/retry_btn"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="65dp"-->
+        <!--            android:backgroundTint="@android:color/black"-->
+        <!--            android:onClick="loginUser"-->
+        <!--            android:visibility="invisible"-->
+        <!--            android:text="Resend Verification Email"-->
+        <!--            android:transitionName="button_tran">-->
+
+        <!--        </Button>-->
+    </LinearLayout>
+
+</LinearLayout>

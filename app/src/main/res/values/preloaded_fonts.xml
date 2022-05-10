@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="preloaded_fonts" translatable="false">
+        <item>@font/akronim</item>
+        <item>@font/antic</item>
+        <item>@font/bungee</item>
+        <item>@font/chela_one</item>
+        <item>@font/pacifico</item>
+        <item>@font/sail</item>
+    </array>
+</resources>
