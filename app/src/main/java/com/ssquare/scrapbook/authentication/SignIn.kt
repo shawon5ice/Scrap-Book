@@ -14,7 +14,7 @@ class SignIn : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.toSignUpBtn.setOnClickListener {
-            startActivity(Intent(applicationContext, SignIn::class.java))
+            startActivity(Intent(applicationContext, SignUp::class.java))
             finish()
         }
     }
