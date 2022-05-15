@@ -14,13 +14,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.ssquare.scrapbook.MainActivity
 import com.ssquare.scrapbook.R
+import com.ssquare.scrapbook.common.Validator
 import com.ssquare.scrapbook.databinding.ActivitySignUpBinding
 
 class SignUp : AppCompatActivity() {
@@ -48,13 +47,16 @@ class SignUp : AppCompatActivity() {
     private fun createAccount() {
         registerClicked = true
 
-        val fullName = binding.signUpFullName.editText!!.text.toString()
-        val userName = binding.signUpUserName.editText!!.text.toString()
-        val email = binding.signUpEmail.editText!!.text.toString()
-        val pass1 = binding.signUpPassword.editText!!.text.toString()
-        val pass2 = binding.signUpPassword2.editText!!.text.toString()
+        val fullName = binding.signUpFullName.editText!!.text.toString().trim()
+        val userName = binding.signUpUserName.editText!!.text.toString().trim()
+        val email = binding.signUpEmail.editText!!.text.toString().trim()
+        val pass1 = binding.signUpPassword.editText!!.text.toString().trim()
+        val pass2 = binding.signUpPassword2.editText!!.text.toString().trim()
 
-        isValidEmail(email)
+        if(!Validator().isValidEmail(email)){
+            binding.signUpEmail.error = "Badly formatted Email"
+        }
+
         emptyError(fullName, userName, email, pass1, pass2)
         if (pass1.isNotEmpty() && pass2.isNotEmpty()) {
             passwordCheck(pass1, pass2)
@@ -77,38 +79,44 @@ class SignUp : AppCompatActivity() {
             try {
 
                 FirebaseDatabase.getInstance().getReference()
-                    .child("Users").orderByChild("username")
-                    .equalTo(userName).addListenerForSingleValueEvent(object : ValueEventListener {
-                        override fun onDataChange(snapshot: DataSnapshot) {
-                            if (snapshot.exists()) {
-                                binding.signUpUserName.error = "UserName already taken"
-                            } else {
-                                mAuth.createUserWithEmailAndPassword(email, pass1)
-                                    .addOnCompleteListener { task ->
-                                        if (task.isSuccessful) {
-                                            saveUserInfo(fullName, userName, email,progressDialog)
-                                        } else {
-                                            val message = task.exception!!.message.toString()
-                                            Snackbar.make(
-                                                findViewById(android.R.id.content),
-                                                message,
-                                                Snackbar.LENGTH_SHORT
-                                            )
-                                                .setAction("CLOSE", View.OnClickListener { action ->
+                    .child("Users").addListenerForSingleValueEvent(
+                        object : ValueEventListener {
+                            override fun onDataChange(snapshot: DataSnapshot) {
+                                if (snapshot.hasChild(userName)) {
+                                    binding.signUpUserName.error = "UserName already taken"
+                                } else {
+                                    mAuth.createUserWithEmailAndPassword(email, pass1)
+                                        .addOnCompleteListener { task ->
+                                            if (task.isSuccessful) {
+                                                saveUserInfo(
+                                                    fullName,
+                                                    userName,
+                                                    email,
+                                                    progressDialog
+                                                )
+                                            } else {
+                                                val message = task.exception!!.message.toString()
+                                                Snackbar.make(
+                                                    findViewById(android.R.id.content),
+                                                    message,
+                                                    Snackbar.LENGTH_SHORT
+                                                )
+                                                    .setAction(
+                                                        "CLOSE",
+                                                        View.OnClickListener { action ->
 
-                                                })
-                                                .setActionTextColor(resources.getColor(android.R.color.holo_red_light))
-                                                .show()
+                                                        })
+                                                    .setActionTextColor(resources.getColor(android.R.color.holo_red_light))
+                                                    .show()
+                                            }
                                         }
-                                    }
+                                }
                             }
-                        }
 
-                        override fun onCancelled(error: DatabaseError) {
+                            override fun onCancelled(error: DatabaseError) {
 
-                        }
-
-                    })
+                            }
+                        })
 
             } finally {
                 binding.signUpBtn.isEnabled = true
@@ -118,7 +126,12 @@ class SignUp : AppCompatActivity() {
         }
     }
 
-    private fun saveUserInfo(fullName: String, userName: String, email: String,progressDialog: ProgressDialog) {
+    private fun saveUserInfo(
+        fullName: String,
+        userName: String,
+        email: String,
+        progressDialog: ProgressDialog
+    ) {
         val mAuth = FirebaseAuth.getInstance()
         val currentUserId = mAuth.currentUser!!.uid
         val userRef = FirebaseDatabase.getInstance().reference.child("Users")
@@ -132,6 +145,8 @@ class SignUp : AppCompatActivity() {
         userMap["profile_image"] =
             "https://firebasestorage.googleapis.com/v0/b/scrap-book-163ee.appspot.com/o/Default_images%2Fprofile.png?alt=media&token=6cb69f05-11db-41cd-8515-f88b6a56bde3"
 
+        userMap["followingList"] = ArrayList<String>()
+        userMap["followersList"] = ArrayList<String>()
         userRef.child(userName).setValue(userMap).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 Toast.makeText(
@@ -139,6 +154,11 @@ class SignUp : AppCompatActivity() {
                     "Successfully Signed Up in ScrapBook",
                     Toast.LENGTH_SHORT
                 ).show()
+
+                val intent = Intent(this@SignUp, MainActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+                finish()
             } else {
                 val message = task.exception!!.message.toString()
                 Toast.makeText(
@@ -237,12 +257,5 @@ class SignUp : AppCompatActivity() {
 
             override fun afterTextChanged(p0: Editable?) {}
         })
-    }
-
-    private fun isValidEmail(target: String) {
-        val isValid = Patterns.EMAIL_ADDRESS.matcher(target).matches()
-        if (!isValid) {
-            binding.signUpEmail.error = "Badly formatted Email"
-        }
     }
 }
