@@ -1,5 +1,6 @@
 package com.ssquare.scrapbook
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.widget.SearchView
@@ -11,6 +12,8 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.ssquare.scrapbook.databinding.ActivityMainBinding
 import com.ssquare.scrapbook.fragments.HomeFragment
 import com.ssquare.scrapbook.fragments.NotificationFragment
@@ -36,6 +39,10 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val pref = applicationContext.getSharedPreferences("PREFS", Context.MODE_PRIVATE).edit()
+
+        pref.putString("profileUID",FirebaseAuth.getInstance().currentUser?.uid)
+        pref.apply()
         val navView: BottomNavigationView = binding.navView
 
         navView.setOnItemSelectedListener {
@@ -55,6 +62,7 @@ class MainActivity : AppCompatActivity() {
                     return@setOnItemSelectedListener true
                 }
                 R.id.nav_profile -> {
+
                     loadFragment(ProfileFragment())
                     return@setOnItemSelectedListener true
                 }

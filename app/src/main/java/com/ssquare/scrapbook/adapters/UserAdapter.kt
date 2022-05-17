@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -16,6 +18,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.squareup.picasso.Picasso
 import com.ssquare.scrapbook.R
+import com.ssquare.scrapbook.fragments.ProfileFragment
 import com.ssquare.scrapbook.models.User
 import de.hdodenhof.circleimageview.CircleImageView
 
@@ -43,6 +46,18 @@ class UserAdapter(
             Picasso.get().load(user.getProfileImage()).into(holder.profileImage)
         }
 
+        holder.userViewItem.setOnClickListener(View.OnClickListener{
+
+            val pref = mContext.getSharedPreferences("PREFS",Context.MODE_PRIVATE).edit()
+
+            pref.putString("profileUserName",user.getUserName())
+            pref.putString("profileUID",user.getUid())
+            pref.apply()
+
+            (mContext as FragmentActivity).supportFragmentManager.beginTransaction()
+                .replace(R.id.container, ProfileFragment()).commit()
+
+        })
 
 
         if(!user.getUid().equals(firebaseUser?.uid)){
@@ -128,5 +143,6 @@ class UserAdapter(
         val userName: TextView = ItemView.findViewById(R.id.user_name_TV_search)
         val fullName: TextView = ItemView.findViewById(R.id.user_full_name_TV_search)
         val followBtn: Button = ItemView.findViewById(R.id.user_follow_btn_search)
+        val userViewItem: CardView = ItemView.findViewById(R.id.user_item_view)
     }
 }

@@ -16,11 +16,13 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
+import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import com.ssquare.scrapbook.MainActivity
 import com.ssquare.scrapbook.R
 import com.ssquare.scrapbook.common.Validator
 import com.ssquare.scrapbook.databinding.ActivitySignUpBinding
+import com.ssquare.scrapbook.models.User
 
 class SignUp : AppCompatActivity() {
     private lateinit var binding: ActivitySignUpBinding
@@ -53,7 +55,7 @@ class SignUp : AppCompatActivity() {
         val pass1 = binding.signUpPassword.editText!!.text.toString().trim()
         val pass2 = binding.signUpPassword2.editText!!.text.toString().trim()
 
-        if(!Validator().isValidEmail(email)){
+        if (!Validator().isValidEmail(email)) {
             binding.signUpEmail.error = "Badly formatted Email"
         }
 
@@ -69,7 +71,7 @@ class SignUp : AppCompatActivity() {
             progressDialog.setTitle("Kotlin Progress Bar")
             progressDialog.setMessage("Application is loading, please wait")
             progressDialog.show()
-            val mAuth = FirebaseAuth.getInstance()
+
 
             binding.signUpBtn.isEnabled = false
 
@@ -79,51 +81,82 @@ class SignUp : AppCompatActivity() {
             try {
 
                 FirebaseDatabase.getInstance().getReference()
-                    .child("Users").addListenerForSingleValueEvent(
-                        object : ValueEventListener {
-                            override fun onDataChange(snapshot: DataSnapshot) {
-                                if (snapshot.hasChild(userName)) {
-                                    binding.signUpUserName.error = "UserName already taken"
-                                } else {
-                                    mAuth.createUserWithEmailAndPassword(email, pass1)
-                                        .addOnCompleteListener { task ->
-                                            if (task.isSuccessful) {
-                                                saveUserInfo(
-                                                    fullName,
-                                                    userName,
-                                                    email,
-                                                    progressDialog
-                                                )
-                                            } else {
-                                                val message = task.exception!!.message.toString()
-                                                Snackbar.make(
-                                                    findViewById(android.R.id.content),
-                                                    message,
-                                                    Snackbar.LENGTH_SHORT
-                                                )
-                                                    .setAction(
-                                                        "CLOSE",
-                                                        View.OnClickListener { action ->
+                    .child("userNames").child(userName).addListenerForSingleValueEvent(object: ValueEventListener{
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        Log.d("Snapshot",snapshot.toString())
+                        if(snapshot.exists()){
+                            binding.signUpUserName.error = "UserName already taken"
+                        }else{
+                            createUserAndSaveInfo(email,pass1,fullName,userName,progressDialog)
+                            saveUserName(userName)
+                        }
+                    }
 
-                                                        })
-                                                    .setActionTextColor(resources.getColor(android.R.color.holo_red_light))
-                                                    .show()
-                                            }
-                                        }
-                                }
-                            }
+                    override fun onCancelled(error: DatabaseError) {
+                    }
 
-                            override fun onCancelled(error: DatabaseError) {
-
-                            }
-                        })
-
+                })
             } finally {
                 binding.signUpBtn.isEnabled = true
                 progressDialog.dismiss()
                 binding.progressBar.visibility = View.INVISIBLE
             }
         }
+    }
+
+    private fun saveUserName(userName:String) {
+        val userRef = FirebaseDatabase.getInstance().reference.child("userNames")
+        val mAuth = FirebaseAuth.getInstance()
+        val userNameMap = HashMap<String, Any>()
+        userNameMap[userName] = true
+        userRef.child(userName).setValue(userNameMap).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                Toast.makeText(
+                    applicationContext,
+                    "Successfully UserName Saved in ScrapBook",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                val message = task.exception!!.message.toString()
+                Toast.makeText(
+                    applicationContext,
+                    message,
+                    Toast.LENGTH_SHORT
+                ).show()
+                mAuth.signOut()
+            }
+        }
+    }
+
+    private fun createUserAndSaveInfo(
+        email:String, pass1: String,fullName: String,userName: String,progressDialog: ProgressDialog
+    ) {
+        val mAuth = FirebaseAuth.getInstance()
+        mAuth.createUserWithEmailAndPassword(email, pass1)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    saveUserInfo(
+                        fullName,
+                        userName,
+                        email,
+                        progressDialog
+                    )
+                } else {
+                    val message = task.exception!!.message.toString()
+                    Snackbar.make(
+                        findViewById(android.R.id.content),
+                        message,
+                        Snackbar.LENGTH_SHORT
+                    )
+                        .setAction(
+                            "CLOSE"
+                        ) {
+
+                        }
+                        .setActionTextColor(resources.getColor(android.R.color.holo_red_light))
+                        .show()
+                }
+            }
     }
 
     private fun saveUserInfo(
@@ -145,9 +178,7 @@ class SignUp : AppCompatActivity() {
         userMap["profile_image"] =
             "https://firebasestorage.googleapis.com/v0/b/scrap-book-163ee.appspot.com/o/Default_images%2Fprofile.png?alt=media&token=6cb69f05-11db-41cd-8515-f88b6a56bde3"
 
-        userMap["followingList"] = ArrayList<String>()
-        userMap["followersList"] = ArrayList<String>()
-        userRef.child(userName).setValue(userMap).addOnCompleteListener { task ->
+        userRef.child(currentUserId).setValue(userMap).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 Toast.makeText(
                     applicationContext,

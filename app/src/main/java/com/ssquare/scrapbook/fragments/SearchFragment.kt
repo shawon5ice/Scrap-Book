@@ -90,7 +90,7 @@ class SearchFragment : Fragment() {
     }
 
     private fun retrieveUser() {
-        val userRef = FirebaseDatabase.getInstance().getReference()
+        val userRef = FirebaseDatabase.getInstance().reference
             .child("Users")
         userRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
