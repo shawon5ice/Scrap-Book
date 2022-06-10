@@ -8,8 +8,10 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.core.net.toUri
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DataSnapshot
@@ -38,20 +40,21 @@ class UserAdapter(
     override fun onBindViewHolder(holder: UserAdapter.ViewHolder, position: Int) {
         val user = mUser[position]
         print(user.toString())
-        holder.userName.text = "#" + user.getUserName()
-        holder.fullName.text = user.getFullName()
-        if (user.getProfileImage()!!.isEmpty()) {
-            holder.profileImage.setImageResource(R.drawable.profile)
-        } else {
-            Picasso.get().load(user.getProfileImage()).into(holder.profileImage)
-        }
+        holder.userName.text = "#" + user.username
+        holder.fullName.text = user.fullname
+        Glide
+            .with(mContext)
+            .load(user.profile_image.toString()
+                .toUri().buildUpon().scheme("https").build())
+            .placeholder(R.drawable.profile)
+            .into(holder.profileImage);
 
         holder.userViewItem.setOnClickListener(View.OnClickListener{
 
             val pref = mContext.getSharedPreferences("PREFS",Context.MODE_PRIVATE).edit()
 
-            pref.putString("profileUserName",user.getUserName())
-            pref.putString("profileUID",user.getUid())
+            pref.putString("profileUserName",user.username)
+            pref.putString("profileUID",user.uid)
             pref.apply()
 
             (mContext as FragmentActivity).supportFragmentManager.beginTransaction()
@@ -60,8 +63,8 @@ class UserAdapter(
         })
 
 
-        if(!user.getUid().equals(firebaseUser?.uid)){
-            checkFollowingStatus(user.getUid().toString(), holder.followBtn)
+        if(!user.uid.equals(firebaseUser?.uid)){
+            checkFollowingStatus(user.uid.toString(), holder.followBtn)
 
             holder.followBtn.setOnClickListener {
                 if (holder.followBtn.text.equals("Follow")) {
@@ -69,11 +72,11 @@ class UserAdapter(
                     firebaseUser?.uid.let { itl ->
                         FirebaseDatabase.getInstance().reference
                             .child("Follow").child(itl.toString())
-                            .child("Following").child(user.getUid().toString())
+                            .child("Following").child(user.uid.toString())
                             .setValue(true).addOnCompleteListener { task ->
                                 firebaseUser?.uid.let { itl ->
                                     FirebaseDatabase.getInstance().reference
-                                        .child("Follow").child(user.getUid().toString())
+                                        .child("Follow").child(user.uid.toString())
                                         .child("Followers").child(itl.toString())
                                         .setValue(true).addOnCompleteListener { task ->
                                             if (task.isSuccessful) {
@@ -89,11 +92,11 @@ class UserAdapter(
                     firebaseUser?.uid.let { itl ->
                         FirebaseDatabase.getInstance().reference
                             .child("Follow").child(itl.toString())
-                            .child("Following").child(user.getUid().toString())
+                            .child("Following").child(user.uid.toString())
                             .removeValue().addOnCompleteListener { task ->
                                 firebaseUser?.uid.let { itl ->
                                     FirebaseDatabase.getInstance().reference
-                                        .child("Follow").child(user.getUid().toString())
+                                        .child("Follow").child(user.uid.toString())
                                         .child("Followers").child(itl.toString())
                                         .removeValue().addOnCompleteListener { task ->
                                             if (task.isSuccessful) {

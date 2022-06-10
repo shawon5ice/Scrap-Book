@@ -75,13 +75,13 @@ class SearchFragment : Fragment() {
         filteredUsers?.clear()
         if(input[0].equals("#")){
             for (item in mUser!!.iterator()) {
-                if (item.getUserName()!!.lowercase().contains(input.substring(1).lowercase())) {
+                if (item.username!!.lowercase().contains(input.substring(1).lowercase())) {
                     filteredUsers!!.add(item)
                 }
             }
         }else{
             for (item in mUser!!.iterator()) {
-                if (item.getFullName()!!.lowercase().contains(input.lowercase())) {
+                if (item.fullname!!.lowercase().contains(input.lowercase())) {
                     filteredUsers!!.add(item)
                 }
             }

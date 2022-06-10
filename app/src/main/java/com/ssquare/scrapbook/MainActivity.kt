@@ -2,18 +2,10 @@ package com.ssquare.scrapbook
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
-import android.widget.SearchView
-import android.widget.TextView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.ssquare.scrapbook.databinding.ActivityMainBinding
 import com.ssquare.scrapbook.fragments.HomeFragment
 import com.ssquare.scrapbook.fragments.NotificationFragment
@@ -26,6 +18,7 @@ class MainActivity : AppCompatActivity() {
 
     internal var selectedFragment: Fragment? = HomeFragment()
 
+
     private  fun loadFragment(fragment: Fragment){
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.container,fragment)
@@ -35,6 +28,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)

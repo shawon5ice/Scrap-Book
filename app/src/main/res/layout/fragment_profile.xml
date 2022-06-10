@@ -24,7 +24,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:fontFamily="@font/chela_one"
-                    android:text="UserName"
+                    android:text="Loading..."
                     android:textColor="@android:color/black"
                     android:textSize="18sp" />
 
@@ -60,12 +60,26 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/profile_image_id"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:src="@drawable/profile">
-                </de.hdodenhof.circleimageview.CircleImageView>
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/profile_image_id"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:src="@drawable/profile">
+                    </de.hdodenhof.circleimageview.CircleImageView>
+                    <ProgressBar
+                        android:id="@+id/progressBar"
+                        android:visibility="invisible"
+                        android:layout_centerVertical="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                    </ProgressBar>
+                </RelativeLayout>
+
+
 
                  <LinearLayout
                      android:layout_margin="10dp"
@@ -172,11 +186,7 @@
                          android:shadowColor="#A8A8A8"
 
                          />
-                     <com.google.android.material.button.MaterialButton
-                         style="@style/Widget.Material3.Button.ElevatedButton"
-                         android:layout_width="180dp"
-                         android:layout_height="40dp">
-                     </com.google.android.material.button.MaterialButton>
+
                  </LinearLayout>
             </LinearLayout>
             <LinearLayout
@@ -189,7 +199,7 @@
                     android:id="@+id/profile_full_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Arman Ahmed Shawon"
+                    android:text="Loading..."
                     android:textSize="14dp"
                     android:textStyle="bold"
 
@@ -198,11 +208,10 @@
                     android:id="@+id/profile_fragment_bio"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Bio"
+                    android:text="Loading..."
                     android:textSize="12dp"
                     android:textColor="@android:color/black"/>
             </LinearLayout>
- nnnnnnnn
             <com.google.android.material.divider.MaterialDivider
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -239,7 +248,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
             </com.google.android.material.divider.MaterialDivider>
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="120dp"
+                android:src="@drawable/profile"
+                android:id="@+id/profile2"
+                android:layout_height="120dp">
+            </de.hdodenhof.circleimageview.CircleImageView>
         </LinearLayout>
+
     </ScrollView>
 
 
